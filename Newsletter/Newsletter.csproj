@@ -208,10 +208,9 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\NewsletterSignup.cshtml" />
+    <Content Include="Views\Newsletter\SendNewsletter.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\Newsletter\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
   </ItemGroup>
