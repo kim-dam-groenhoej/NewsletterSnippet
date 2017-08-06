@@ -1,0 +1,47 @@
+﻿@model Newsletter.Models.NewsletterUser
+
+@{
+    ViewBag.Title = "NewsletterSignup";
+}
+
+<h2>Newsletter Signup</h2>
+
+
+@using (Ajax.BeginForm("Signup", "Newsletter", new AjaxOptions
+{//GetPatients is name of method in PatientController
+    HttpMethod = "POST",
+    LoadingElementId = "loader",
+    OnSuccess = "OnSuccess",
+    OnFailure = "OnFailure"
+}))
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>NewsletterUser</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div id="loader" class=" aletr" style="display:none">
+            Loading...!
+        </div>
+
+        <div id="serverResponse" style="display:none">
+            
+        </div><br />
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Signup" class="btn btn-default" />
+            </div>
+        </div>
+
+    </div>
+}
