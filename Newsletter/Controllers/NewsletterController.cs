@@ -38,7 +38,7 @@ namespace Newsletter.Controllers
 
             System.Net.Mail.SmtpClient client = new System.Net.Mail.SmtpClient("mail.kimdamgroenhoej.dk", 587);
             client.EnableSsl = true;
-            client.Credentials = new System.Net.NetworkCredential("testemail@kimdamgroenhoej.dk", "***");
+            client.Credentials = new System.Net.NetworkCredential("testemail@kimdamgroenhoej.dk", "43DDnG!");
 
             // Allow self signed cerificate
             ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
@@ -85,22 +85,21 @@ namespace Newsletter.Controllers
             {
                 try
                 {
-                    using (var db = new NewsletterContext())
+                    var db = new NewsletterContext();
+                    
+                    var result = (from user in db.NewsletterUsers
+                                    where user.Email == model.Email
+                                    select user).FirstOrDefault();
+
+                    if (result != null)
                     {
-                        var result = (from user in db.NewsletterUsers
-                                      where user.Email == model.Email
-                                      select user).FirstOrDefault();
-
-                        if (result != null)
-                        {
-                            throw new Exception("Email '" + model.Email + "' findes allerede.");
-                        }
-
-                        db.NewsletterUsers.Add(model);
-                        db.SaveChanges();
-
-                        response.Message = "E-mail er tilføjet";
+                        throw new Exception("Email '" + model.Email + "' findes allerede.");
                     }
+
+                    db.NewsletterUsers.Add(model);
+                    db.SaveChanges();
+
+                    response.Message = "E-mail er tilføjet";
                 }
                 catch (Exception ex)
                 {
