@@ -1,4 +1,6 @@
 ﻿using Newsletter.Models;
+using Newsletter.ViewsModels;
+using Postal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,9 +38,8 @@ namespace Newsletter.Controllers
             message.Subject = title;
             message.Body = content;
 
-            System.Net.Mail.SmtpClient client = new System.Net.Mail.SmtpClient("mail.kimdamgroenhoej.dk", 587);
-            client.EnableSsl = true;
-            client.Credentials = new System.Net.NetworkCredential("testemail@kimdamgroenhoej.dk", "43DDnG!");
+            System.Net.Mail.SmtpClient client = new System.Net.Mail.SmtpClient();
+         
 
             // Allow self signed cerificate
             ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
@@ -61,13 +62,37 @@ namespace Newsletter.Controllers
                 
                 foreach (var user in db.NewsletterUsers)
                 {
-                    this.SendEmail(user.Email, model.Title, model.Content);
+                    dynamic email = new EmailTest();
+                    email.From = "kontakt@kimdamgroenhoej.dk";
+                    email.To = user.Email;
+                    email.Content = model.Content;
+                    email.Title = model.Title;
+
+                    // Allow self signed cerificate
+                    ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
+
+
+                    email.Send();
+
+                    // this.SendEmail(user.Email, model.Title, model.Content);
                 }
 
                 TempData["success"] = true;
             }
 
             return RedirectToAction("SendNewsLetter");
+        }
+
+        public ActionResult RemoveNewsletterUser(int id)
+        {
+            var db = new NewsletterContext();
+
+            var newsletter = db.NewsletterUsers.FirstOrDefault(l => l.ID == id);
+
+            db.NewsletterUsers.Remove(newsletter);
+            db.SaveChanges();
+
+            return View();
         }
 
         [HttpPost]
