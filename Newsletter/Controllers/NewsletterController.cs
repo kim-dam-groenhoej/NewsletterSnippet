@@ -57,15 +57,11 @@ namespace Newsletter.Controllers
         {
             if (ModelState.IsValid)
             {
-                using (var db = new NewsletterContext())
+                var db = new NewsletterContext();
+                
+                foreach (var user in db.NewsletterUsers)
                 {
-                    var result = from user in db.NewsletterUsers
-                                 select user;
-
-                    foreach (var user in result)
-                    {
-                        this.SendEmail(user.Email, model.Title, model.Content);
-                    }
+                    this.SendEmail(user.Email, model.Title, model.Content);
                 }
 
                 TempData["success"] = true;
@@ -86,10 +82,12 @@ namespace Newsletter.Controllers
                 try
                 {
                     var db = new NewsletterContext();
-                    
-                    var result = (from user in db.NewsletterUsers
-                                    where user.Email == model.Email
-                                    select user).FirstOrDefault();
+
+                    var result = db.NewsletterUsers.FirstOrDefault(u => u.Email == model.Email);
+
+                    //var result = (from user in db.NewsletterUsers
+                    //                where user.Email == model.Email
+                    //                select user).FirstOrDefault();
 
                     if (result != null)
                     {

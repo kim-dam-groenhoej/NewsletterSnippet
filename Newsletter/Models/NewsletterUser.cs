@@ -20,7 +20,15 @@ namespace Newsletter.Models
         {
             get
             {
-                return this.dateCreated.HasValue ? this.dateCreated.Value : DateTime.Now;
+                if (this.dateCreated.HasValue)
+                {
+                    return this.dateCreated.Value;
+                } else
+                {
+                    return DateTime.Now; ;
+                }
+
+                //return this.dateCreated.HasValue ? this.dateCreated.Value : DateTime.Now;
             }
 
             set { this.dateCreated = value; }
